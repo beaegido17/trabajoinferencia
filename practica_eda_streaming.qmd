@@ -9,6 +9,28 @@ execute:
 ---
 
 ## 1. Descripción y Procedencia de los Datos.
+
+Este conjunto de datos recoge información sobre las tendencias de contenido en las distintas plataformas de streaming, en el que se incluyen tanto películas, como series. Cada fila es una observación, tratándose de una serie/película única. Entre las variables seleccionadas para el análisis, encontramos información que nos describe cada observación, ya sea el género, idioma original o año de lanzamiento, y ciertas métricas de recepción del público, ya sea la popularidad o la valoración de los usuarios. El objetivo es explorar estas variables para entender qué características definen a los contenidos más exitosos. 
+
+##2. Limpieza y Preparación de los Datos.
+
+Antes de comenzar el análisis, limpiaremos el conjunto de datos original, para eliminar registros duplicados, descartar variables de texto libre que no aportan valor estadístico, transformar los datos al formato correcto y agrupar los valores nulos del país de origen en una categoría propia. Además, hemos querido filtrar los contenidos con menos de 10 votos para evitar sesgos en las medias.
+
 ---
+
+```{r}
+
+library(tidyverse)
+
+datos_limpios <- read.csv("streaming_content_trends.csv") %>%
+  distinct(id, .keep_all = TRUE) %>%
+  select(-title, -overview, -id, -release_date) %>%
+  mutate(
+    origin_country = ifelse(is.na(origin_country), "Desconocido", origin_country),
+    release_year = as.integer(release_year)) %>%
+  drop_na(release_year, genres) %>%
+  filter(vote_count >= 10)
+  
+```
 
 ## 
