@@ -1,0 +1,14 @@
+---
+title: "Análisis Exploratorio de Datos: Tendencias de Contenido en Streaming"
+author: "Adrián García Fernández, Beatriz Egido Rodríguez, Marcos Sanz Asensio."
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## 1. Descripción y Procedencia de los Datos.
+---
+
+## 
