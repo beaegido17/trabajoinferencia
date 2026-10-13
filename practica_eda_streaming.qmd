@@ -34,3 +34,36 @@ datos_limpios <- read.csv("streaming_content_trends.csv") %>%
 ```
 
 ## 
+```{r}
+# Diagrama de dispersión: Popularidad vs. Año de lanzamiento
+ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type)) +
+  geom_point(alpha = 0.5) +
+  scale_y_log10() + 
+  labs(title = "Evolución de la Popularidad por Año de Lanzamiento",
+       x = "Año de Lanzamiento",
+       y = "Popularidad (Escala Logarítmica)",
+       color = "Tipo de Medio") +
+  theme_minimal()
+```
+```{r}
+# Gráfico de barras para el tipo de medio (Película vs. Serie)
+ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
+  geom_bar() +
+  labs(title = "Cantidad de Películas vs. Series",
+       x = "Tipo de Medio",
+       y = "Frecuencia (Cantidad)",
+       fill = "Tipo") +
+  theme_minimal()
+```
+
+```{r}
+# Histograma de las valoraciones medias
+ggplot(datos_limpios, aes(x = vote_average)) +
+  geom_histogram(bins = 30, fill = "coral", color = "black", alpha = 0.8) +
+  labs(title = "Distribución de las Valoraciones Medias",
+       x = "Nota Media (0-10)",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+
