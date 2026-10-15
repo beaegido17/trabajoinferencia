@@ -59,11 +59,23 @@ datos_limpios <- read.csv("streaming_content_trends.csv") %>%
   
 ```
 
+## 3. Preguntas de Partida
+
+Para guiar el análisis y dar sentido a las visualizaciones, nos planteamos las siguientes preguntas:
+
+1.  ¿Existe alguna relación entre el año de lanzamiento y la popularidad?
+
+2.  ¿Cómo está distribuido el volumen de contenido entre películas y series en las plataformas de streaming?
+
+3.  ¿Cuál es el comportamiento general de los usuarios a la hora de valorar una película o serie?
+
+4.  ¿En qué idioma se graban la mayoría de las obras?
+
+*Nota: Las preguntas anteriores, serán respondidas en el próximo apartado. El número de la pregunta es el subíndice del próximo apartado (Pregunta 1 = Apartado 4.1)*
+
 ## 4. Proceso de Exploración
 
 ### 4.1. Relación Popularidad/Año de Lanzamiento
-
-Con el siguiente diagrama de dispersión podemos contestar a la siguiente pregunta: ¿se trabajaba mejor antes en el mundo del cine y las series, o estamos mejorando cada vez más y llegando a más público?
 
 Vemos que la gran mayoría de lanzamientos se concentran a partir del año 2000 hasta la actualidad, y vemos que, el punto más alto de popularidad, está pegado a la derecha, lo que significa que ha sido lanzada en este año, 2026. La menos popular, data de, aproximadamente, 2012.
 
@@ -79,7 +91,7 @@ ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type))
   theme_minimal()
 ```
 
-### 4.2. Películas o Series: ¿qué es lo que más nos ofrecen?
+### 4.2. Volumen de Tipo: Películas o Series.
 
 Este gráfico de barras nos dice qué es lo que más vemos en las plataformas: películas o series. Como podemos ver, hay ligeramente más series que películas, pero por una diferencia bastante pequeña.
 
@@ -94,7 +106,7 @@ ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
   theme_minimal()
 ```
 
-### 4.3. Valoraciones medias
+### 4.3. Valoraciones Medias
 
 En el siguiente histograma, podremos ver la frecuencia de valoraciones medias de las obras del dataset. Como podemos comprobar visualmente, la mayoría de obras son valoradas entre un 8 y un 9 de valoración. Vemos como, desde el 3 (aproximadamente), la frecuencia va aumentando exponencialmente hasta el 8.5 (aproximado), para luego caer en picado, sin ninguna obra que tenga un 10 de valoración media.
 
@@ -107,3 +119,22 @@ ggplot(datos_limpios, aes(x = vote_average)) +
        y = "Frecuencia") +
   theme_minimal()
 ```
+
+### 4.4. Top 10 Idiomas Más Frecuentes (Versión Original)
+
+```{r}
+datos_limpios %>%
+  count(original_language, sort = TRUE) %>%
+  slice_head(n = 10) %>%
+  ggplot(aes(x = reorder(original_language, n), y = n, fill = original_language)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Top 10 Idiomas Originales más Frecuentes",
+       x = "Idioma Original",
+       y = "Cantidad de Títulos") +
+  theme_minimal()
+```
+
+## 5. Principales Hallazgos y Conclusiones
+
+## 6. Uso de Inteligencia Artificial
