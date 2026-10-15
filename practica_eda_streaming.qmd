@@ -10,13 +10,39 @@ execute:
 
 ## 1. Descripción y Procedencia de los Datos.
 
-Este conjunto de datos recoge información sobre las tendencias de contenido en las distintas plataformas de streaming, en el que se incluyen tanto películas, como series. Cada fila es una observación, tratándose de una serie/película única. Entre las variables seleccionadas para el análisis, encontramos información que nos describe cada observación, ya sea el género, idioma original o año de lanzamiento, y ciertas métricas de recepción del público, ya sea la popularidad o la valoración de los usuarios. El objetivo es explorar estas variables para entender qué características definen a los contenidos más exitosos. 
+En los últimos años, el mundo entero ha visto un cambio en la forma de consumir contenido audiovisual. A la hora de ver series o películas, antes teníamos mucho menos de donde elegir: podíamos ir al cine, ir a los antiguos "videoclubs" o esperar a que echen en algún canal nuestra serie favorita. Hoy día, las cosas han cambiado, y tenemos las cosas más fáciles que nunca: encendemos la tele, buscamos nuestro servicio de streaming favorito (sea Netflix, Prime Video o Disney +), y tenemos miles de sugerencias del algoritmo para darnos el mejor entretenimiento posible.
 
-##2. Limpieza y Preparación de los Datos.
+Nosotros nos hemos propuesto analizar lo que hace que una serie o película sea exitoso: queremos medir distintas métricas que puedan ser de utilidad para saber cómo hacer que la obra audiovisual que un potencial director tenga en mente sea exitosa. Aunque no sea una fórmula perfecta ni 100% demostrable, se podría hacer una estimación de si esa obra puede llegar a la cima o no.
+
+El conjunto de datos recoge información sobre las tendencias de contenido en las distintas plataformas de streaming, en el que se incluyen tanto películas, como series. Cada fila es una observación, tratándose de una serie/película única. Entre las variables seleccionadas para el análisis, encontramos las distintas categorías:
+
+- Categoría de Búsqueda
+
+- Tipo de obra
+
+- Idioma original
+
+- Género
+
+- Popularidad
+
+- Puntuación media
+
+- Número de votos
+
+- País de origen
+
+- Año de lanzamiento
+
+- Reciente (booleano)
+
+El dataset puede ser encontrado en Kaggle, a través del siguiente enlace: <https://www.kaggle.com/datasets/mariaaqdas/popular-movies-and-tv-shows-dataset-2026/data>
+
+## 2. Limpieza y Preparación de los Datos.
 
 Antes de comenzar el análisis, limpiaremos el conjunto de datos original, para eliminar registros duplicados, descartar variables de texto libre que no aportan valor estadístico, transformar los datos al formato correcto y agrupar los valores nulos del país de origen en una categoría propia. Además, hemos querido filtrar los contenidos con menos de 10 votos para evitar sesgos en las medias.
 
----
+------------------------------------------------------------------------
 
 ```{r}
 
@@ -33,7 +59,14 @@ datos_limpios <- read.csv("streaming_content_trends.csv") %>%
   
 ```
 
-## 
+## 4. Proceso de Exploración
+
+### 4.1. Relación Popularidad/Año de Lanzamiento
+
+Con el siguiente diagrama de dispersión podemos contestar a la siguiente pregunta: ¿se trabajaba mejor antes en el mundo del cine y las series, o estamos mejorando cada vez más y llegando a más público?
+
+Vemos que la gran mayoría de lanzamientos se concentran a partir del año 2000 hasta la actualidad, y vemos que, el punto más alto de popularidad, está pegado a la derecha, lo que significa que ha sido lanzada en este año, 2026. La menos popular, data de, aproximadamente, 2012.
+
 ```{r}
 # Diagrama de dispersión: Popularidad vs. Año de lanzamiento
 ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type)) +
@@ -45,6 +78,11 @@ ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type))
        color = "Tipo de Medio") +
   theme_minimal()
 ```
+
+### 4.2. Películas o Series: ¿qué es lo que más nos ofrecen?
+
+Este gráfico de barras nos dice qué es lo que más vemos en las plataformas: películas o series. Como podemos ver, hay ligeramente más series que películas, pero por una diferencia bastante pequeña.
+
 ```{r}
 # Gráfico de barras para el tipo de medio (Película vs. Serie)
 ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
@@ -56,6 +94,10 @@ ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
   theme_minimal()
 ```
 
+### 4.3. Valoraciones medias
+
+En el siguiente histograma, podremos ver la frecuencia de valoraciones medias de las obras del dataset. Como podemos comprobar visualmente, la mayoría de obras son valoradas entre un 8 y un 9 de valoración. Vemos como, desde el 3 (aproximadamente), la frecuencia va aumentando exponencialmente hasta el 8.5 (aproximado), para luego caer en picado, sin ninguna obra que tenga un 10 de valoración media.
+
 ```{r}
 # Histograma de las valoraciones medias
 ggplot(datos_limpios, aes(x = vote_average)) +
@@ -65,5 +107,3 @@ ggplot(datos_limpios, aes(x = vote_average)) +
        y = "Frecuencia") +
   theme_minimal()
 ```
-
-
