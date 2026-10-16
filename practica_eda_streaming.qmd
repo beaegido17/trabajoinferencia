@@ -38,6 +38,8 @@ El conjunto de datos recoge información sobre las tendencias de contenido en la
 
 El dataset puede ser encontrado en Kaggle, a través del siguiente enlace: <https://www.kaggle.com/datasets/mariaaqdas/popular-movies-and-tv-shows-dataset-2026/data>
 
+Además de estudios para responder a nuestras preguntas, haremos un estudio de medidas de centralidad, posición y dispersion. 
+
 ## 2. Limpieza y Preparación de los Datos.
 
 Antes de comenzar el análisis, limpiaremos el conjunto de datos original, para eliminar registros duplicados, descartar variables de texto libre que no aportan valor estadístico, transformar los datos al formato correcto y agrupar los valores nulos del país de origen en una categoría propia. Además, hemos querido filtrar los contenidos con menos de 10 votos para evitar sesgos en las medias.
@@ -75,7 +77,77 @@ Para guiar el análisis y dar sentido a las visualizaciones, nos planteamos las 
 
 ## 4. Proceso de Exploración
 
-### 4.1. Relación Popularidad/Año de Lanzamiento
+### 4.1. Análisis de variables cualitativas:
+
+Entre las variables que hay, las cualitativas son: tipo de obra, idioma original, género, país de origen y la booleana de reciente. Vamos a hacer un análisis inidividual de cada una de ellas. 
+
+```{r}
+# Tipo de Obra (media_type)
+datos_limpios %>% 
+  count(media_type) %>% 
+  mutate(Porcentaje = n / sum(n) * 100)
+```
+
+
+```{r}
+# País de Origen (origin_country) - Top 10
+datos_limpios %>% 
+  count(origin_country, sort = TRUE) %>% 
+  mutate(Porcentaje = n / sum(n) * 100) %>% 
+  head(10)
+```
+
+
+```{r}
+# Idioma Original (original_language) - Top 10
+datos_limpios %>% 
+  count(original_language, sort = TRUE) %>% 
+  mutate(Porcentaje = n / sum(n) * 100) %>% 
+  head(10)
+```
+
+
+```{r}
+# Géneros (genres) - Top 10 combinaciones más frecuentes
+datos_limpios %>% 
+  count(genres, sort = TRUE) %>% 
+  mutate(Porcentaje = n / sum(n) * 100) %>% 
+  head(10)
+```
+
+### 4.2. Análisis de variables cuantativas:
+
+Entre las variables que hay, las cuantativas son: año de lanzamiento, popularidad, puntuación media y número de votos. Vamos a hacer un análisis inidividual de cada una de ellas. Para ello, usamos estas métricas: mínimo, cuartiles, media, máximo y desviación típica.
+
+```{r}
+# Año de Lanzamiento (release_year)
+summary(datos_limpios$release_year)
+sd(datos_limpios$release_year, na.rm = TRUE)
+```
+
+
+```{r}
+# Popularidad (popularity)
+summary(datos_limpios$popularity)
+sd(datos_limpios$popularity, na.rm = TRUE)
+```
+
+
+```{r}
+# Puntuación Media (vote_average)
+summary(datos_limpios$vote_average)
+sd(datos_limpios$vote_average, na.rm = TRUE)
+```
+
+
+```{r}
+# Número de Votos (vote_count)
+summary(datos_limpios$vote_count)
+sd(datos_limpios$vote_count, na.rm = TRUE)
+```
+
+
+### 4.3. Relación Popularidad/Año de Lanzamiento
 
 Vemos que la gran mayoría de lanzamientos se concentran a partir del año 2000 hasta la actualidad, y vemos que, el punto más alto de popularidad, está pegado a la derecha, lo que significa que ha sido lanzada en este año, 2026. La menos popular, data de, aproximadamente, 2012.
 
@@ -91,7 +163,7 @@ ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type))
   theme_minimal()
 ```
 
-### 4.2. Volumen de Tipo: Películas o Series.
+### 4.4. Volumen de Tipo: Películas o Series.
 
 Este gráfico de barras nos dice qué es lo que más vemos en las plataformas: películas o series. Como podemos ver, hay ligeramente más series que películas, pero por una diferencia bastante pequeña.
 
@@ -106,7 +178,7 @@ ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
   theme_minimal()
 ```
 
-### 4.3. Valoraciones Medias
+### 4.5. Valoraciones Medias
 
 En el siguiente histograma, podremos ver la frecuencia de valoraciones medias de las obras del dataset. Como podemos comprobar visualmente, la mayoría de obras son valoradas entre un 8 y un 9 de valoración. Vemos como, desde el 3 (aproximadamente), la frecuencia va aumentando exponencialmente hasta el 8.5 (aproximado), para luego caer en picado, sin ninguna obra que tenga un 10 de valoración media.
 
@@ -120,7 +192,7 @@ ggplot(datos_limpios, aes(x = vote_average)) +
   theme_minimal()
 ```
 
-### 4.4. Top 10 Idiomas Más Frecuentes (Versión Original)
+### 4.6. Top 10 Idiomas Más Frecuentes (Versión Original)
 
 ```{r}
 datos_limpios %>%
