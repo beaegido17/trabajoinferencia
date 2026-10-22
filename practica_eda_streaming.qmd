@@ -38,7 +38,7 @@ El conjunto de datos recoge información sobre las tendencias de contenido en la
 
 El dataset puede ser encontrado en Kaggle, a través del siguiente enlace: <https://www.kaggle.com/datasets/mariaaqdas/popular-movies-and-tv-shows-dataset-2026/data>
 
-Además de estudios para responder a nuestras preguntas, haremos un estudio de medidas de centralidad, posición y dispersion. 
+Además de estudios para responder a nuestras preguntas, haremos un estudio de medidas de centralidad, posición y dispersion.
 
 ## 2. Limpieza y Preparación de los Datos.
 
@@ -65,15 +65,19 @@ datos_limpios <- read.csv("streaming_content_trends.csv") %>%
 
 Para guiar el análisis y dar sentido a las visualizaciones, nos planteamos las siguientes preguntas:
 
-1.  ¿Existe alguna relación entre el año de lanzamiento y la popularidad?
+1.  ¿Se ven más películas o series?
 
-2.  ¿Cómo está distribuido el volumen de contenido entre películas y series en las plataformas de streaming?
+2.  ¿Qué país produce más obras?
 
-3.  ¿Cuál es el comportamiento general de los usuarios a la hora de valorar una película o serie?
+3.  ¿Cuál es el idioma original de la mayoría de obras?
 
-4.  ¿En qué idioma se graban la mayoría de las obras?
+4.  ¿Cuál es el género más común?
 
-*Nota: Las preguntas anteriores, serán respondidas en el próximo apartado. El número de la pregunta es el subíndice del próximo apartado (Pregunta 1 = Apartado 4.1)*
+5.  ¿Cómo se distribuyen los años de lanzamiento?
+
+6.  ¿Cómo se distribuye la popularidad y las valoraciones medias?
+
+7.  ¿Existe alguna relación entre popularidad y año de lanzamiento?
 
 ## 4. Proceso de Exploración
 
@@ -81,7 +85,9 @@ Para guiar el análisis y dar sentido a las visualizaciones, nos planteamos las 
 
 #### 4.1.1 Análisis univariante de cualitativas:
 
-Entre las variables que hay, las cualitativas son: tipo de obra, idioma original, género, país de origen y la booleana de reciente. Vamos a hacer un análisis inidividual de cada una de ellas. 
+Entre las variables que hay, las cualitativas son: tipo de obra, idioma original, género, país de origen y la booleana de reciente. Vamos a hacer un análisis inidividual de cada una de ellas.
+
+**Películas VS Series.**
 
 ```{r}
 # Tipo de Obra (media_type)
@@ -89,8 +95,8 @@ datos_limpios %>%
   count(media_type) %>% 
   mutate(Porcentaje = n / sum(n) * 100)
 ```
-Como podemos observar, el 47.81% son películas, y el 52.19% son series, dándonos a entender que, aunque son porcentajes similares, se consumen más series que películas. 
 
+Como podemos observar, el 47.81% son películas, y el 52.19% son series, dándonos a entender que, aunque son porcentajes similares, se consumen más series que películas.
 
 ```{r}
 # Gráfico de barras para el tipo de medio (Película vs. Serie)
@@ -103,7 +109,10 @@ ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
   theme_minimal()
 
 ```
+
 Con este gráfio de barras se nos hace evidente lo similares que son los porcentajes.
+
+**Países de origen de las obras.**
 
 ```{r}
 # País de Origen (origin_country) - Top 10
@@ -112,7 +121,8 @@ datos_limpios %>%
   mutate(Porcentaje = n / sum(n) * 100) %>% 
   head(10)
 ```
-Vamos a verlo con un daiagrama de barras para hacer un estudio más exhausto. 
+
+Vamos a verlo con un daiagrama de barras para hacer un estudio más exhausto.
 
 ```{r}
 # Gráfico de barras: Top 10 Países de Origen
@@ -127,7 +137,10 @@ datos_limpios %>%
        y = "Cantidad de Obras") +
   theme_minimal()
 ```
-Este diagrama nos muestra muy claramente como la industria estadounidense domina la producción superando por el doble a Japón. Podemos destacar también la consolidación del mercado asiático, con Japón y Korea como segundos y terceros.Ese desconocido que recopila hasta 400 obras, son obras con una procedencia desconocida en el dataset. 
+
+Este diagrama nos muestra muy claramente como la industria estadounidense domina la producción superando por el doble a Japón. Podemos destacar también la consolidación del mercado asiático, con Japón y Korea como segundos y terceros. Ese desconocido que recopila hasta 400 obras, son obras con una procedencia desconocida en el dataset.
+
+**Lenguaje de la Versión Original**
 
 ```{r}
 # Idioma Original (original_language) - Top 10
@@ -137,6 +150,7 @@ datos_limpios %>%
   head(10)
 ```
 
+Viéndolo en un gráfico de barras:
 
 ```{r}
 datos_limpios %>%
@@ -151,6 +165,7 @@ datos_limpios %>%
   theme_minimal()
 ```
 
+**Género(s) más frecuentes.**
 
 ```{r}
 # Géneros (genres) - Top 10 combinaciones más frecuentes
@@ -159,6 +174,7 @@ datos_limpios %>%
   mutate(Porcentaje = n / sum(n) * 100) %>% 
   head(10)
 ```
+
 ```{r}
 # Gráfico de barras: Top 10 Géneros más frecuentes
 datos_limpios %>%
@@ -174,18 +190,23 @@ datos_limpios %>%
   
 
 ```
-El análisis revela que el Drama es, con diferencia, el género más destacado, seguido que la comedia. Además podemos extraer un aspecto importante, y es que hay una gran presencia de híbridos, habiendo solo dos individuales en el top. 
-  
+
+El análisis revela que el Drama es, con diferencia, el género más destacado, seguido que la comedia. Además podemos extraer un aspecto importante, y es que hay una gran presencia de híbridos, habiendo solo dos individuales en el top.
+
 #### 4.1.2 Análisis univariante de cuantitativas:
 
 Entre las variables que hay, las cuantativas son: año de lanzamiento, popularidad, puntuación media y número de votos. Vamos a hacer un análisis inidividual de cada una de ellas. Para ello, usamos estas métricas: mínimo, cuartiles, media, máximo y desviación típica.
+
+**Años de lanzamiento.**
 
 ```{r}
 # Año de Lanzamiento (release_year)
 summary(datos_limpios$release_year)
 sd(datos_limpios$release_year, na.rm = TRUE)
 ```
-Para una mejor precisión, haremos un histograma para poder comentarlo. 
+
+Para una mejor precisión, haremos un histograma para poder comentarlo.
+
 ```{r}
 # Histograma del Año de Lanzamiento
 ggplot(datos_limpios, aes(x = release_year)) +
@@ -195,14 +216,18 @@ ggplot(datos_limpios, aes(x = release_year)) +
        y = "Cantidad de Obras") +
   theme_minimal()
 ```
-Podemos ver claramente como en los últimos años ha incrementado fuertemente. La presencia de obras abteriores a 1980 es muy baja, iniciando un crecimiento en los 90. Este histograma evidencia la priorización de la novedad ante el contenido más clásico de las plataformas. 
+
+Podemos ver claramente como en los últimos años ha incrementado fuertemente. La presencia de obras abteriores a 1980 es muy baja, iniciando un crecimiento en los 90. Este histograma evidencia la priorización de la novedad ante el contenido más clásico de las plataformas.
+
+**Popularidad.**
 
 ```{r}
 # Popularidad (popularity)
 summary(datos_limpios$popularity)
 sd(datos_limpios$popularity, na.rm = TRUE)
 ```
-Vamos a visualizar la popularidad con un boxplot, para poder comentarla bien: 
+
+Vamos a visualizar la popularidad con un boxplot, para poder comentarla bien:
 
 ```{r}
 # Boxplot de Popularidad (escala logarítmica sin notación científica)
@@ -214,8 +239,10 @@ ggplot(datos_limpios, aes(y = popularity)) +
   theme_minimal() +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 ```
-Este análisis nos revela una distribuxión bastante desigual en el consumo de streaming. El 50% central tiene una popularidad moderada, con una mediana cercana a 10,mientras que las obras más famosas llegan a tener hasta 1000 puntos. Sin embargo, en la parte superior podemos ver valores atípicos, que nos indican que el éxito no se distribuye de manera equitativa. Visto esto, podemos concluir que el mercado está muy polarizado por unos pocos contenidos virales que acaparan la atracción de los ususarios. 
 
+Este análisis nos revela una distribuxión bastante desigual en el consumo de streaming. El 50% central tiene una popularidad moderada, con una mediana cercana a 10,mientras que las obras más famosas llegan a tener hasta 1000 puntos. Sin embargo, en la parte superior podemos ver valores atípicos, que nos indican que el éxito no se distribuye de manera equitativa. Visto esto, podemos concluir que el mercado está muy polarizado por unos pocos contenidos virales que acaparan la atracción de los ususarios.
+
+**Puntuación media.**
 
 ```{r}
 # Puntuación Media (vote_average)
@@ -224,7 +251,7 @@ sd(datos_limpios$vote_average, na.rm = TRUE)
 
 ```
 
-Para poder estudiar mejor esta variable, haremos lo mismo, un boxplot. 
+Para poder estudiar mejor esta variable, haremos lo mismo, un boxplot.
 
 ```{r}
 # Boxplot de Puntuación Media (vote_average) para aislar valores atípicos
@@ -235,6 +262,7 @@ ggplot(datos_limpios, aes(y = vote_average)) +
   theme_minimal() +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 ```
+
 Viendo este gráfico de cajas y bigotes, podemos observar que los bigotes aparecen por la parte inferior, lo que nos indica que la mayoria de puntuaciones que se dan son positivas, de entre 7.2 a 8.5, mientra que los datos atípicos son las malas puntuaciones. Podemos concluir entonces que, por lo general, se califican las películas y series positivamente. Aun así, para una mejor claridad, podemos hacer un histograma, ya que esta es una variable muy interesante que responde a una de nuestras preguntas:
 
 ```{r}
@@ -249,14 +277,13 @@ ggplot(datos_limpios, aes(x = vote_average)) +
 
 Podemos ver la frecuencia de valoraciones medias de las obras del dataset. Como podemos comprobar visualmente, la mayoría de obras son valoradas entre un 8 y un 9 de valoración. Vemos como, desde el 3 (aproximadamente), la frecuencia va aumentando exponencialmente hasta el 8.5 (aproximado), para luego caer en picado, sin ninguna obra que tenga un 10 de valoración media.
 
-
 ```{r}
 # Número de Votos (vote_count)
 summary(datos_limpios$vote_count)
 sd(datos_limpios$vote_count, na.rm = TRUE)
 ```
 
-Con esta última variable haremos lo mismo para comentarla. 
+Con esta última variable haremos lo mismo para comentarla.
 
 ```{r}
 # Boxplot del Número de Votos (escala logarítmica sin notación científica)
@@ -268,8 +295,8 @@ ggplot(datos_limpios, aes(y = vote_count)) +
   theme_minimal() +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 ```
-El boxplot refleja una distribución muy definida, con una mediana de 1000 exacta. El 50% de las valoraciones concentra entre 300 y 4000 votos aproximadamente. No podemos apreciar valores atípicos, por lo que, sabemos que hay obras con más participación que otras, el volumen de interacción sigue una progresión sin anomalías. 
 
+El boxplot refleja una distribución muy definida, con una mediana de 1000 exacta. El 50% de las valoraciones concentra entre 300 y 4000 votos aproximadamente. No podemos apreciar valores atípicos, por lo que, sabemos que hay obras con más participación que otras, el volumen de interacción sigue una progresión sin anomalías.
 
 #### 4.2 Análisis multivariante:
 
@@ -288,7 +315,6 @@ ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type))
        color = "Tipo de Medio") +
   theme_minimal()
 ```
-
 
 ## 5. Principales Hallazgos y Conclusiones
 
