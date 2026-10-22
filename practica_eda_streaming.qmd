@@ -77,7 +77,9 @@ Para guiar el análisis y dar sentido a las visualizaciones, nos planteamos las 
 
 ## 4. Proceso de Exploración
 
-### 4.1. Análisis univariante de variables cualitativas:
+### 4.1. Análisis univariante:
+
+#### 4.1.1 Análisis univariante de cualitativas:
 
 Entre las variables que hay, las cualitativas son: tipo de obra, idioma original, género, país de origen y la booleana de reciente. Vamos a hacer un análisis inidividual de cada una de ellas. 
 
@@ -88,6 +90,20 @@ datos_limpios %>%
   mutate(Porcentaje = n / sum(n) * 100)
 ```
 Como podemos observar, el 47.81% son películas, y el 52.19% son series, dándonos a entender que, aunque son porcentajes similares, se consumen más series que películas. 
+
+
+```{r}
+# Gráfico de barras para el tipo de medio (Película vs. Serie)
+ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
+  geom_bar() +
+  labs(title = "Cantidad de Películas vs. Series",
+       x = "Tipo de Medio",
+       y = "Frecuencia (Cantidad)",
+       fill = "Tipo") +
+  theme_minimal()
+
+```
+Con este gráfio de barras se nos hace evidente lo similares que son los porcentajes.
 
 ```{r}
 # País de Origen (origin_country) - Top 10
@@ -123,6 +139,20 @@ datos_limpios %>%
 
 
 ```{r}
+datos_limpios %>%
+  count(original_language, sort = TRUE) %>%
+  slice_head(n = 10) %>%
+  ggplot(aes(x = reorder(original_language, n), y = n, fill = original_language)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(title = "Top 10 Idiomas Originales más Frecuentes",
+       x = "Idioma Original",
+       y = "Cantidad de Títulos") +
+  theme_minimal()
+```
+
+
+```{r}
 # Géneros (genres) - Top 10 combinaciones más frecuentes
 datos_limpios %>% 
   count(genres, sort = TRUE) %>% 
@@ -146,7 +176,7 @@ datos_limpios %>%
 ```
 El análisis revela que el Drama es, con diferencia, el género más destacado, seguido que la comedia. Además podemos extraer un aspecto importante, y es que hay una gran presencia de híbridos, habiendo solo dos individuales en el top. 
   
-### 4.2. Análisis univariante de variables cuantativas:
+#### 4.1.2 Análisis univariante de cuantitativas:
 
 Entre las variables que hay, las cuantativas son: año de lanzamiento, popularidad, puntuación media y número de votos. Vamos a hacer un análisis inidividual de cada una de ellas. Para ello, usamos estas métricas: mínimo, cuartiles, media, máximo y desviación típica.
 
@@ -205,7 +235,20 @@ ggplot(datos_limpios, aes(y = vote_average)) +
   theme_minimal() +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 ```
-Viendo este gráfico de cajas y bigotes, podemos observar que los bigotes aparecen por la parte inferior, lo que nos indica que la mayoria de puntuaciones que se dan son positivas, de entre 7.2 a 8.5, mientra que los datos atípicos son las malas puntuaciones. Podemos concluir entonces que, por lo general, se califican las películas y series positivamente.
+Viendo este gráfico de cajas y bigotes, podemos observar que los bigotes aparecen por la parte inferior, lo que nos indica que la mayoria de puntuaciones que se dan son positivas, de entre 7.2 a 8.5, mientra que los datos atípicos son las malas puntuaciones. Podemos concluir entonces que, por lo general, se califican las películas y series positivamente. Aun así, para una mejor claridad, podemos hacer un histograma, ya que esta es una variable muy interesante que responde a una de nuestras preguntas:
+
+```{r}
+# Histograma de las valoraciones medias
+ggplot(datos_limpios, aes(x = vote_average)) +
+  geom_histogram(bins = 30, fill = "coral", color = "black", alpha = 0.8) +
+  labs(title = "Distribución de las Valoraciones Medias",
+       x = "Nota Media (0-10)",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+Podemos ver la frecuencia de valoraciones medias de las obras del dataset. Como podemos comprobar visualmente, la mayoría de obras son valoradas entre un 8 y un 9 de valoración. Vemos como, desde el 3 (aproximadamente), la frecuencia va aumentando exponencialmente hasta el 8.5 (aproximado), para luego caer en picado, sin ninguna obra que tenga un 10 de valoración media.
+
 
 ```{r}
 # Número de Votos (vote_count)
@@ -227,7 +270,10 @@ ggplot(datos_limpios, aes(y = vote_count)) +
 ```
 El boxplot refleja una distribución muy definida, con una mediana de 1000 exacta. El 50% de las valoraciones concentra entre 300 y 4000 votos aproximadamente. No podemos apreciar valores atípicos, por lo que, sabemos que hay obras con más participación que otras, el volumen de interacción sigue una progresión sin anomalías. 
 
-### 4.3. Relación Popularidad/Año de Lanzamiento
+
+#### 4.2 Análisis multivariante:
+
+### 4.2.1 Relación Popularidad/Año de Lanzamiento:
 
 Vemos que la gran mayoría de lanzamientos se concentran a partir del año 2000 hasta la actualidad, y vemos que, el punto más alto de popularidad, está pegado a la derecha, lo que significa que ha sido lanzada en este año, 2026. La menos popular, data de, aproximadamente, 2012.
 
@@ -243,49 +289,6 @@ ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type))
   theme_minimal()
 ```
 
-### 4.4. Volumen de Tipo: Películas o Series.
-
-Este gráfico de barras nos dice qué es lo que más vemos en las plataformas: películas o series. Como podemos ver, hay ligeramente más series que películas, pero por una diferencia bastante pequeña.
-
-```{r}
-# Gráfico de barras para el tipo de medio (Película vs. Serie)
-ggplot(datos_limpios, aes(x = media_type, fill = media_type)) +
-  geom_bar() +
-  labs(title = "Cantidad de Películas vs. Series",
-       x = "Tipo de Medio",
-       y = "Frecuencia (Cantidad)",
-       fill = "Tipo") +
-  theme_minimal()
-```
-
-### 4.5. Valoraciones Medias
-
-En el siguiente histograma, podremos ver la frecuencia de valoraciones medias de las obras del dataset. Como podemos comprobar visualmente, la mayoría de obras son valoradas entre un 8 y un 9 de valoración. Vemos como, desde el 3 (aproximadamente), la frecuencia va aumentando exponencialmente hasta el 8.5 (aproximado), para luego caer en picado, sin ninguna obra que tenga un 10 de valoración media.
-
-```{r}
-# Histograma de las valoraciones medias
-ggplot(datos_limpios, aes(x = vote_average)) +
-  geom_histogram(bins = 30, fill = "coral", color = "black", alpha = 0.8) +
-  labs(title = "Distribución de las Valoraciones Medias",
-       x = "Nota Media (0-10)",
-       y = "Frecuencia") +
-  theme_minimal()
-```
-
-### 4.6. Top 10 Idiomas Más Frecuentes (Versión Original)
-
-```{r}
-datos_limpios %>%
-  count(original_language, sort = TRUE) %>%
-  slice_head(n = 10) %>%
-  ggplot(aes(x = reorder(original_language, n), y = n, fill = original_language)) +
-  geom_col(show.legend = FALSE) +
-  coord_flip() +
-  labs(title = "Top 10 Idiomas Originales más Frecuentes",
-       x = "Idioma Original",
-       y = "Cantidad de Títulos") +
-  theme_minimal()
-```
 
 ## 5. Principales Hallazgos y Conclusiones
 
