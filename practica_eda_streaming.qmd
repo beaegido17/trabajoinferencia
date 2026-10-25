@@ -298,9 +298,9 @@ ggplot(datos_limpios, aes(y = vote_count)) +
 
 El boxplot refleja una distribución muy definida, con una mediana de 1000 exacta. El 50% de las valoraciones concentra entre 300 y 4000 votos aproximadamente. No podemos apreciar valores atípicos, por lo que, sabemos que hay obras con más participación que otras, el volumen de interacción sigue una progresión sin anomalías.
 
-#### 4.2 Análisis multivariante:
+### 4.2 Análisis multivariante:
 
-### 4.2.1 Relación Popularidad/Año de Lanzamiento:
+#### 4.2.1 Relación Popularidad/Año de Lanzamiento:
 
 Vemos que la gran mayoría de lanzamientos se concentran a partir del año 2000 hasta la actualidad, y vemos que, el punto más alto de popularidad, está pegado a la derecha, lo que significa que ha sido lanzada en este año, 2026. La menos popular, data de, aproximadamente, 2012.
 
@@ -318,4 +318,36 @@ ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type))
 
 ## 5. Principales Hallazgos y Conclusiones
 
+El análisis exploratorio y multivariante de las métricas de consumo en plataformas de streaming revela patrones estructurales muy definidos sobre qué características impulsan el rendimiento de una obra audiovisual en la actualidad.
+
+### 5.1. El paradigma del formato serializado y la rápida caducidad del contenido 
+
+Aunque la cuota de producción es equilibrada, las series (52.19%) superan a las películas como formato predominante. Esto responde a la estrategia de retención de las plataformas, que buscan mantener a los usuarios suscritos mes a mes mediante temporadas fragmentadas. Paralelamente, el histograma de lanzamientos demuestra un sesgo de recencia extremo. La atención del espectador y del algoritmo se centra casi exclusivamente en producciones lanzadas a partir del año 2000, con picos absolutos en los años más recientes. El catálogo histórico o clásico queda relegado a nichos, confirmando que la novedad es el principal motor de tracción en el mercado actual.
+
+### 5.2. Hegemonía estadounidense frente a la consolidación del bloque asiático
+
+El volumen de producción sigue dominado de forma aplastante por la industria de Estados Unidos, que impone el inglés como el idioma hegemónico (como refleja el top de lenguajes originales). Sin embargo, el análisis por países demuestra una ruptura en el monopolio occidental. Japón y Corea del Sur se consolidan como la segunda y tercera potencia mundial en creación de contenido. Este auge asiático evidencia el éxito global del anime y los k-dramas, demostrando que las barreras culturales y de subtitulado han desaparecido para las nuevas generaciones de espectadores, abriendo vías altamente rentables para la coproducción internacional.
+
+### 5.3. El "Drama" como pilar emocional y la exigencia de hibridación genérica 
+
+El drama se erige como la base narrativa más sólida, seguido de la comedia. El halazgo más relevante en la categorización es la práctica desaparición de los géneros puros en lo alto de la tabla de popularidad. Las audiencias actuales demandan complejidad tonal; las combinaciones híbridas (como drama con elementos de thriler, o comedia con acción) dominan las estadísticas. Esta hibridación permite a las plataformas maximizar el alcance demográfico de una sola obra, captando simultáneamente a diferentes perfiles de usuarios dentro de un mismo hogar.
+
+### 5.4. Polarización extrema de la popularidad y el efecto bola de nieve
+
+El estudio de la popularidad mediante escalas logarítmicas destapa un mercado altamente asimétrico regido por la dinámica winner-takes-a l (el ganador se lo leva todo). El 50% central del catálogo sobrevive con un índice de popularidad moderado y estancado (mediana cercana a 10), mientras que un puñado de anomalías estadísticas acumulan puntuaciones superiores a 1000. Este comportamiento confirma que los algoritmos de recomendación funcionan como cámaras de eco: cuando un estreno capta tracción inicial, el sistema lo promociona masivamente en las pantalas de inicio de todos los usuarios, retroalimentando su éxito y dejando a las producciones de bajo presupuesto en la invisibilidad.
+
+### 5.5. Sesgo de positividad algorítmica en las valoraciones 
+
+La distribución de las calificaciones medias presenta un comportamiento inusual para una curva estadística tradicional, concentrando la inmensa mayoría de los votos entre el 7.2 y el 8.5, con una marcada ausencia de calificaciones deficientes. Esto no significa necesariamente que la calidad promedio sea magistral, sino que demuestra la eficacia predictiva de las plataformas. Al recomendar a cada usuario únicamente aquelos géneros y directores afines a su perfil de visualización previo, se reduce drásticamente la probabilidad de que consuman y penalicen contenido que no es de su gusto, inflando artificialmente la percepción de éxito general.
+
+Para que un director o productora maximice la viabilidad comercial de un nuevo proyecto, la estrategia más fundamentada en los datos consiste en desarrolar una narrativa serializada y continua que fomente la lealtad semanal. El proyecto debe anclarse en el drama humano pero diluirse con al menos dos géneros complementarios para abarcar un target más amplio. Asimismo, la inversión inicial debe priorizar el marketing durante la ventana de lanzamiento para detonar el algoritmo de popularidad en los primeros días, ya que el ciclo de vida del contenido moderno es de un impacto explosivo pero de rápida obsolescencia.
+
 ## 6. Uso de Inteligencia Artificial
+
+En el desarrolo de este análisis de datos, la Inteligencia Artificial ha funcionado como un asistente técnico y analítico, optimizando los tiempos de trabajo y mejorando la calidad de las interpretaciones. Su integración en el flujo de trabajo se divide en los siguientes aportes:
+
+1.   **Generación y optimización de código:** Apoyo en la escritura de las sentencias en R utilizando la librería tidyverse. La IA facilita la estructuración de funciones complejas (como mutate, ifelse o la limpieza de datos nulos) y la creación de visualizaciones efectivas con ggplot2, asegurando que las escalas (como la logarítmica para la popularidad) y los formatos visuales sean los correctos para la naturaleza de los datos.
+
+2.  **Interpretación estadística:** Traducción de resultados matemáticos (cuartiles, desviaciones típicas, distribuciones asimétricas en boxplots) a un lenguaje de negocio comprensible. La IA ayuda a identificar qué significa realmente que los bigotes de un diagrama de cajas estén en la parte inferior o qué implicaciones tiene la ausencia de valores atípicos en el recuento de votos.
+
+El uso de la IA en este estudio no reemplaza el criterio del analista humano, quien debe definir las preguntas de investigación y validar los resultados, pero actúa como un copiloto que acelera la manipulación de datos y refina la comunicación de los halazgos técnicos.
