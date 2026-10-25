@@ -16,25 +16,25 @@ Nosotros nos hemos propuesto analizar lo que hace que una serie o película sea 
 
 El conjunto de datos recoge información sobre las tendencias de contenido en las distintas plataformas de streaming, en el que se incluyen tanto películas, como series. Cada fila es una observación, tratándose de una serie/película única. Entre las variables seleccionadas para el análisis, encontramos las distintas categorías:
 
-- Categoría de Búsqueda
+- Categoría de Búsqueda: agrupa las obras basándose en las reglas de catalogación del repositorio.
 
-- Tipo de obra
+- Tipo de obra (media_type): separa las obras en dos tipos: series de televisión (tv), y películas (movies).
 
-- Idioma original
+- Idioma original (original_language): idioma en el que se produjo la obra originalmente.
 
-- Género
+- Género (genres): clasificación tematica. Se permiten combinaciones híbridas. 
 
-- Popularidad
+- Popularidad (popularity): consolida el volumen de interacciones, búsquedas, etc de cada obra. 
 
-- Puntuación media
+- Puntuación media (vote_avarage): calificación en una media del 1 al 10. 
 
-- Número de votos
+- Número de votos (vote_count): volumen absoluto de usuarios que han emitido una calificación.
 
-- País de origen
+- País de origen (origin_country): pais productor. Las obras sin registro explícito se categorizan como "Desconocido".
 
-- Año de lanzamiento
+- Año de lanzamiento (release_year): año de distribución de la obra, en caso de ser serie, año de la primera temporada.
 
-- Reciente (booleano)
+- Reciente (booleano): segmnenta la actualidad del catálogo.
 
 El dataset puede ser encontrado en Kaggle, a través del siguiente enlace: <https://www.kaggle.com/datasets/mariaaqdas/popular-movies-and-tv-shows-dataset-2026/data>
 
