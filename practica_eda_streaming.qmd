@@ -16,25 +16,25 @@ Nosotros nos hemos propuesto analizar lo que hace que una serie o película sea 
 
 El conjunto de datos recoge información sobre las tendencias de contenido en las distintas plataformas de streaming, en el que se incluyen tanto películas, como series. Cada fila es una observación, tratándose de una serie/película única. Entre las variables seleccionadas para el análisis, encontramos las distintas categorías:
 
-- Categoría de Búsqueda: agrupa las obras basándose en las reglas de catalogación del repositorio.
+- **Categoría de Búsqueda (search_category):** agrupa las obras basándose en las reglas de catalogación del repositorio.
 
-- Tipo de obra (media_type): separa las obras en dos tipos: series de televisión (tv), y películas (movies).
+- **Tipo de obra (media_type)**: separa las obras en dos tipos: series de televisión (tv), y películas (movies).
 
-- Idioma original (original_language): idioma en el que se produjo la obra originalmente.
+- **Idioma original (original_language):** idioma en el que se produjo la obra originalmente.
 
-- Género (genres): clasificación tematica. Se permiten combinaciones híbridas. 
+- **Género (genres):** clasificación tematica. Se permiten combinaciones híbridas.
 
-- Popularidad (popularity): consolida el volumen de interacciones, búsquedas, etc de cada obra. 
+- **Popularidad (popularity):** consolida el volumen de interacciones, búsquedas, etc de cada obra.
 
-- Puntuación media (vote_avarage): calificación en una media del 1 al 10. 
+- **Puntuación media (vote_avarage):** calificación en una media del 1 al 10.
 
-- Número de votos (vote_count): volumen absoluto de usuarios que han emitido una calificación.
+- **Número de votos (vote_count):** volumen absoluto de usuarios que han emitido una calificación.
 
-- País de origen (origin_country): pais productor. Las obras sin registro explícito se categorizan como "Desconocido".
+- **País de origen (origin_country):** pais productor. Las obras sin registro explícito se categorizan como "Desconocido".
 
-- Año de lanzamiento (release_year): año de distribución de la obra, en caso de ser serie, año de la primera temporada.
+- **Año de lanzamiento (release_year):** año de distribución de la obra, en caso de ser serie, año de la primera temporada.
 
-- Reciente (booleano): segmnenta la actualidad del catálogo.
+- **Reciente (is_recent):** Booleano, segmnenta la actualidad del catálogo.
 
 El dataset puede ser encontrado en Kaggle, a través del siguiente enlace: <https://www.kaggle.com/datasets/mariaaqdas/popular-movies-and-tv-shows-dataset-2026/data>
 
@@ -122,7 +122,7 @@ datos_limpios %>%
   head(10)
 ```
 
-Vamos a verlo con un daiagrama de barras para hacer un estudio más exhausto.
+Vamos a verlo con un diagrama de barras para hacer un estudio más exhausto.
 
 ```{r}
 # Gráfico de barras: Top 10 Países de Origen
@@ -277,6 +277,8 @@ ggplot(datos_limpios, aes(x = vote_average)) +
 
 Podemos ver la frecuencia de valoraciones medias de las obras del dataset. Como podemos comprobar visualmente, la mayoría de obras son valoradas entre un 8 y un 9 de valoración. Vemos como, desde el 3 (aproximadamente), la frecuencia va aumentando exponencialmente hasta el 8.5 (aproximado), para luego caer en picado, sin ninguna obra que tenga un 10 de valoración media.
 
+**Número de Votos**
+
 ```{r}
 # Número de Votos (vote_count)
 summary(datos_limpios$vote_count)
@@ -300,7 +302,7 @@ El boxplot refleja una distribución muy definida, con una mediana de 1000 exact
 
 ### 4.2 Análisis multivariante:
 
-#### 4.2.1 Relación Popularidad/Año de Lanzamiento:
+**Relación Popularidad/Año de Lanzamiento:**
 
 Vemos que la gran mayoría de lanzamientos se concentran a partir del año 2000 hasta la actualidad, y vemos que, el punto más alto de popularidad, está pegado a la derecha, lo que significa que ha sido lanzada en este año, 2026. La menos popular, data de, aproximadamente, 2012.
 
@@ -316,11 +318,47 @@ ggplot(datos_limpios, aes(x = release_year, y = popularity, color = media_type))
   theme_minimal()
 ```
 
+**Calidad VS Popularidad**
+
+En el siguiente gráfico, hemos comparado 4 variables en un mismo análisis: la popularidad, la nota media, el tipo de medio y el número de votos. En el eje Y encontramos la popularidad, mientras que en el X la media. Repartido por todo el gráfico, vemos que, cuanto más grande el círculo, más votos tenía esa obra, y también se distingue el medio mediante el color: azul para las series, rojo para las películas.
+
+```{r}
+# Gráfico de Burbujas: Calidad, Popularidad, Votos y Tipo
+ggplot(datos_limpios, aes(x = vote_average, y = popularity, color = media_type, size = vote_count)) +
+  geom_point(alpha = 0.5) +
+  scale_y_log10(labels = function(x) format(x, scientific = FALSE)) +
+  labs(title = "Relación Múltiple: Calidad, Popularidad y Volumen de Votos",
+       x = "Nota Media (0-10)",
+       y = "Popularidad (Escala Logarítmica)",
+       color = "Tipo de Medio",
+       size = "Número de Votos") +
+  theme_minimal()
+```
+
+En este análisis cruzamos cuatro variables y el resultado es muy revelador. Se aprecia claramente que el volumen de votos (el tamaño de la burbuja) y la popularidad (eje Y) aumentan a medida que nos desplazamos hacia las notas más altas (eje X). Además, si nos fijamos en los colores, las series (azul) dominan el cuadrante superior derecho de máxima popularidad y calidad, mientras que existe una gran cantidad de películas (rojo) que, a pesar de tener una buena nota superior a 8, caen a los niveles más bajos de popularidad en la plataforma.
+
+**Comparativa de Notas: Películas VS Series**
+
+Para profundizar en las calificaciones, el siguiente gráfico muestra la distribución de las notas medias utilizando curvas de densidad superpuestas. En el eje X encontramos la nota media (del 0 al 10), mientras que el eje Y representa la concentración o volumen de obras que han recibido esa puntuación. Al igual que en el caso anterior, distinguimos mediante colores si se trata de una película o de una serie. Esta representación visual nos permite comparar de un solo vistazo las dos "campanas" y descubrir si el público tiende a valorar con notas más altas a las series o a las películas, fijándonos simplemente en hacia qué lado se desplaza el pico más alto de cada color.
+
+```{r}
+# Gráfico de Densidad: Distribución de notas medias por tipo de medio
+ggplot(datos_limpios, aes(x = vote_average, fill = media_type)) +
+  geom_density(alpha = 0.4, color = "black", linewidth = 0.5) +
+  labs(title = "Densidad de Calificaciones: Películas vs. Series",
+       x = "Nota Media (0-10)",
+       y = "Densidad",
+       fill = "Tipo de Medio") +
+  theme_minimal()
+```
+
+Este gráfico de densidad muestra cómo se reparten las calificaciones según el formato. La curva de las series, la azul, tiene un pico más alto y se desplaza un poco a la derecha respecto a la curva de las películas, la roja. La curva de las series indica que los usuarios dan notas más altas a las series, mientras que son más exigentes con las calificaciones de las películas.
+
 ## 5. Principales Hallazgos y Conclusiones
 
 El análisis exploratorio y multivariante de las métricas de consumo en plataformas de streaming revela patrones estructurales muy definidos sobre qué características impulsan el rendimiento de una obra audiovisual en la actualidad.
 
-### 5.1. El paradigma del formato serializado y la rápida caducidad del contenido 
+### 5.1. El paradigma del formato serializado y la rápida caducidad del contenido
 
 Aunque la cuota de producción es equilibrada, las series (52.19%) superan a las películas como formato predominante. Esto responde a la estrategia de retención de las plataformas, que buscan mantener a los usuarios suscritos mes a mes mediante temporadas fragmentadas. Paralelamente, el histograma de lanzamientos demuestra un sesgo de recencia extremo. La atención del espectador y del algoritmo se centra casi exclusivamente en producciones lanzadas a partir del año 2000, con picos absolutos en los años más recientes. El catálogo histórico o clásico queda relegado a nichos, confirmando que la novedad es el principal motor de tracción en el mercado actual.
 
@@ -328,7 +366,7 @@ Aunque la cuota de producción es equilibrada, las series (52.19%) superan a las
 
 El volumen de producción sigue dominado de forma aplastante por la industria de Estados Unidos, que impone el inglés como el idioma hegemónico (como refleja el top de lenguajes originales). Sin embargo, el análisis por países demuestra una ruptura en el monopolio occidental. Japón y Corea del Sur se consolidan como la segunda y tercera potencia mundial en creación de contenido. Este auge asiático evidencia el éxito global del anime y los k-dramas, demostrando que las barreras culturales y de subtitulado han desaparecido para las nuevas generaciones de espectadores, abriendo vías altamente rentables para la coproducción internacional.
 
-### 5.3. El "Drama" como pilar emocional y la exigencia de hibridación genérica 
+### 5.3. El "Drama" como pilar emocional y la exigencia de hibridación genérica
 
 El drama se erige como la base narrativa más sólida, seguido de la comedia. El halazgo más relevante en la categorización es la práctica desaparición de los géneros puros en lo alto de la tabla de popularidad. Las audiencias actuales demandan complejidad tonal; las combinaciones híbridas (como drama con elementos de thriler, o comedia con acción) dominan las estadísticas. Esta hibridación permite a las plataformas maximizar el alcance demográfico de una sola obra, captando simultáneamente a diferentes perfiles de usuarios dentro de un mismo hogar.
 
@@ -336,7 +374,7 @@ El drama se erige como la base narrativa más sólida, seguido de la comedia. El
 
 El estudio de la popularidad mediante escalas logarítmicas destapa un mercado altamente asimétrico regido por la dinámica winner-takes-a l (el ganador se lo leva todo). El 50% central del catálogo sobrevive con un índice de popularidad moderado y estancado (mediana cercana a 10), mientras que un puñado de anomalías estadísticas acumulan puntuaciones superiores a 1000. Este comportamiento confirma que los algoritmos de recomendación funcionan como cámaras de eco: cuando un estreno capta tracción inicial, el sistema lo promociona masivamente en las pantalas de inicio de todos los usuarios, retroalimentando su éxito y dejando a las producciones de bajo presupuesto en la invisibilidad.
 
-### 5.5. Sesgo de positividad algorítmica en las valoraciones 
+### 5.5. Sesgo de positividad algorítmica en las valoraciones
 
 La distribución de las calificaciones medias presenta un comportamiento inusual para una curva estadística tradicional, concentrando la inmensa mayoría de los votos entre el 7.2 y el 8.5, con una marcada ausencia de calificaciones deficientes. Esto no significa necesariamente que la calidad promedio sea magistral, sino que demuestra la eficacia predictiva de las plataformas. Al recomendar a cada usuario únicamente aquelos géneros y directores afines a su perfil de visualización previo, se reduce drásticamente la probabilidad de que consuman y penalicen contenido que no es de su gusto, inflando artificialmente la percepción de éxito general.
 
@@ -346,7 +384,7 @@ Para que un director o productora maximice la viabilidad comercial de un nuevo p
 
 En el desarrolo de este análisis de datos, la Inteligencia Artificial ha funcionado como un asistente técnico y analítico, optimizando los tiempos de trabajo y mejorando la calidad de las interpretaciones. Su integración en el flujo de trabajo se divide en los siguientes aportes:
 
-1.   **Generación y optimización de código:** Apoyo en la escritura de las sentencias en R utilizando la librería tidyverse. La IA facilita la estructuración de funciones complejas (como mutate, ifelse o la limpieza de datos nulos) y la creación de visualizaciones efectivas con ggplot2, asegurando que las escalas (como la logarítmica para la popularidad) y los formatos visuales sean los correctos para la naturaleza de los datos.
+1.  **Generación y optimización de código:** Apoyo en la escritura de las sentencias en R utilizando la librería tidyverse. La IA facilita la estructuración de funciones complejas (como mutate, ifelse o la limpieza de datos nulos) y la creación de visualizaciones efectivas con ggplot2, asegurando que las escalas (como la logarítmica para la popularidad) y los formatos visuales sean los correctos para la naturaleza de los datos.
 
 2.  **Interpretación estadística:** Traducción de resultados matemáticos (cuartiles, desviaciones típicas, distribuciones asimétricas en boxplots) a un lenguaje de negocio comprensible. La IA ayuda a identificar qué significa realmente que los bigotes de un diagrama de cajas estén en la parte inferior o qué implicaciones tiene la ausencia de valores atípicos en el recuento de votos.
 
